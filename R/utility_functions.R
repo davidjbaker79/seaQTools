@@ -13,7 +13,6 @@
 #'
 #' @export
 makeGrid <- function(region_sf, cell_size, bufferDist) {
-
   region_bf <-
     st_buffer(region_sf, dist = bufferDist)
   modGrid <-
