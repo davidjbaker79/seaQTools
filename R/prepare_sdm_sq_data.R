@@ -45,15 +45,10 @@ prepare.sdm.sq.data <- function(x, y, speciesName) {
   x_z$Y[is.na(x_z$Y)] <- 0
   x_z <-
     x_z[, c("Survey_ID", "site_major", "Year", "position_dist_code", "Y")]
-  x_z <-
-    ddply(
-      x_z,
-      c("site_major", "Year", "position_dist_code"),
-      .data$summarise,
-      nObs = sum(.data$Y),
-      nTot = length(.data$Y)
-    )
-  sp_env <- left_join(x_z, y)
+  x_zs <- aggregate(Y ~ site_major + Year + position_dist_code,
+                    data = x_z,
+                    FUN = function(x) c(nObs = sum(x), nTot = length(x) ))
+  sp_env <- left_join(x_zs, y)
   sp_env <- na.omit(sp_env)
 
 }
