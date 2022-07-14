@@ -19,8 +19,7 @@ extract.field.view <- function(n,
                                sites_major_sf,
                                height = 30,
                                region_sf,
-                               modGrid,
-                               env_dat) {
+                               modGrid) {
   #- Region buffer
   region_bf <- st_buffer(region_sf, dist = 30000)
 
@@ -98,7 +97,6 @@ extract.field.view <- function(n,
                 "position_dist_code",
                 "viewArea")]
     grd_z <- st_drop_geometry(grd_z)
-    grd_z <- left_join(grd_z, env_dat)
   })
   fv_grd_id <- do.call(bind_rows, fv_grd_id_i)
 

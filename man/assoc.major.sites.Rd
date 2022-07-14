@@ -18,5 +18,6 @@ site coordinates.}
 A data.frame with sites_major associated with original sites.
 }
 \description{
-Associating point locations sites with allocated sites
+These sites have been manually aggregated where it looked like multiple
+designations had been given for the same site.
 }

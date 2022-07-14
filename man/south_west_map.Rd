@@ -3,7 +3,7 @@
 \docType{data}
 \name{south_west_map}
 \alias{south_west_map}
-\title{South west England boundary map}
+\title{South West England boundary map}
 \format{
 AN object of class \code{"sf"}
 }

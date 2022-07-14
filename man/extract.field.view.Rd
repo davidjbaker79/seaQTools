@@ -4,7 +4,7 @@
 \alias{extract.field.view}
 \title{Determine the viewable area from each site and extract enviro data}
 \usage{
-extract.field.view(n, sites_major_sf, height = 30, region_sf, modGrid, env_dat)
+extract.field.view(n, sites_major_sf, height = 30, region_sf, modGrid)
 }
 \arguments{
 \item{n}{A numeric giving row of sites_major_sf.}

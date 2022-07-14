@@ -6,6 +6,7 @@
 #' @param region_sf An sf object defining the spatial coastal region of study.
 #' @param modGrid An sf object defining the grid for analysis created using the
 #' makeGrid function.
+#' @param vgpm_path The file path to the vgpm data.
 #' @param yr A numeric giving the year of data to extract.
 #' @param mth A numeric giving the month (1-12) of data to extract.
 #'

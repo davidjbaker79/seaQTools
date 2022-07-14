@@ -12,6 +12,8 @@ vgpm2grid(region_sf, modGrid, vgpm_path, mth, yr)
 \item{modGrid}{An sf object defining the grid for analysis created using the
 makeGrid function.}
 
+\item{vgpm_path}{The file path to the vgpm data.}
+
 \item{mth}{A numeric giving the month (1-12) of data to extract.}
 
 \item{yr}{A numeric giving the year of data to extract.}

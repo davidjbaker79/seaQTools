@@ -2,6 +2,8 @@
 #'
 #' A sf object showing the land boundary for the south west of England.
 #'
+#' @name south_west_map
+#'
 #' @docType data
 #'
 #' @usage data(south_west_map)
