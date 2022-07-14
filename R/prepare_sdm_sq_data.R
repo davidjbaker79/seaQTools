@@ -9,7 +9,6 @@
 #' @importFrom dplyr distinct
 #' @importFrom dplyr full_join
 #' @importFrom dplyr left_join
-#' @importFrom plyr ddply
 #' @import sf
 #' @importFrom rlang .data
 #'
@@ -44,13 +43,14 @@ prepare.sdm.sq.data <- function(x, y, speciesName) {
   x_z$Y[is.na(x_z$Y)] <- 0
   x_z <-
     x_z[, c("Survey_ID", "site_major", "Year", "position_dist_code", "Y")]
-  x_zs <- aggregate(Y ~ site_major + Year + position_dist_code,
-                    data = x_z,
-                    FUN = function(x) c(nObs = sum(x), nTot = length(x) ))
-<<<<<<< HEAD
+  x_zs <- aggregate(
+    Y ~ site_major + Year + position_dist_code,
+    data = x_z,
+    FUN = function(x) {
+      c(nObs = sum(x), nTot = length(x))
+    }
+  )
   x_zs <- do.call(data.frame, x_zs)
-=======
->>>>>>> c1ae82e70be12ba9383f706fdc0986b7fcd2864b
   sp_env <- left_join(x_zs, y)
   sp_env <- na.omit(sp_env)
 
