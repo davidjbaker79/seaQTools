@@ -16,9 +16,6 @@ recorded) site coordinates}
 }
 \value{
 A data.frame.
-Fill out the data.frame with each time period a survey took place and
-each position_dist_code then calculate the number of surveys per time
-period where the target species was detected out of the number of surveys
 }
 \description{
 Prepare SDM Seaquest data

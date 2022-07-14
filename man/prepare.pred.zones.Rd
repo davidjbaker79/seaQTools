@@ -16,7 +16,6 @@ makeGrid function.}
 }
 \value{
 A data.frame.
-modGrid = modGrid1km;  region_sf = sw_bd;   coarse_res = 5000
 }
 \description{
 This function prepares the grids to intersect the environmental data with an
