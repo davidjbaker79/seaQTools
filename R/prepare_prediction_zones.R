@@ -16,7 +16,8 @@
 #' @import sf
 #'
 #' @return A data.frame.
-#' modGrid = modGrid1km;  region_sf = sw_bd;   coarse_res = 5000
+#'
+#' @export
 prepare.pred.zones <-
   function(modGrid,
            region_sf,

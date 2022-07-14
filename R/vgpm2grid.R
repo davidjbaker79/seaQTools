@@ -16,6 +16,8 @@
 #' @importFrom rlang .data
 #'
 #' @return A data.frame with monthly sst per grid cell.
+#'
+#' @export
 vgpm2grid <- function(region_sf, modGrid, vgpm_path, mth, yr) {
 
   #- Load vgpm data

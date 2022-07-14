@@ -13,6 +13,8 @@
 #' @import sf
 #'
 #' @return A data.frame with sites_major associated with original sites.
+#'
+#' @export
 assoc.major.sites <-
   function(x,
            y,

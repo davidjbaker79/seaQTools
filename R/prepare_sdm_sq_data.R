@@ -14,6 +14,8 @@
 #' @importFrom rlang .data
 #'
 #' @return A data.frame.
+#'
+#' @export
 prepare.sdm.sq.data <- function(x, y, speciesName) {
   #- Expand out all Surveys to include all zones
   #- This is important for calculating detection

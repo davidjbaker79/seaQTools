@@ -2,19 +2,22 @@
 #'
 #' @param m A model object produced by mgcv::gam.
 #' @param x A data.frame with environmental data for predictions.
-#' @param region_sf
-#' @param position_dist_zone
-#' @param coarse_res
+#' @param region_sf An sf object for the region coastal boundary.
+#' @param position_dist_zone A vector of character strings giving the distance
+#' bands for predictions.
+#' @param coarse_res A numeric giving the coarse resolution for predictions.
 #'
 #' @import sf
 #' @importFrom dplyr left_join
 #'
 #' @return A data.frame with spatial predictions.
+#'
+#' @export
 gam.predict.rr <-
   function(m,
            x,
            region_sf,
-           position_dist_zone,
+           position_dist_zone = c("0_1km", "1_2km", "2_5km", "5_10km"),
            coarse_res = 5000) {
     za <- lapply(position_dist_zone, function(i) {
       #- Filter to zone

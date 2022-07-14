@@ -15,6 +15,8 @@
 #' @importFrom Hmisc wtd.var
 #'
 #' @return A data.frame.
+#'
+#' @export
 extract.field.view <- function(n,
                                sites_major_sf,
                                height = 30,

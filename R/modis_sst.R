@@ -19,6 +19,8 @@
 #' @importFrom rlang .data
 #'
 #' @return A data.frame with monthly sst per grid cell.
+#'
+#' @export
 modis_sst <- function(region_sf, modGrid, yr, mth) {
 
   #- vector of months
