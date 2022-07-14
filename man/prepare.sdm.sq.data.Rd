@@ -2,7 +2,7 @@
 % Please edit documentation in R/prepare_sdm_sq_data.R
 \name{prepare.sdm.sq.data}
 \alias{prepare.sdm.sq.data}
-\title{Prepare SDM Seaquest data}
+\title{Prepare Seaquest data for modelling}
 \usage{
 prepare.sdm.sq.data(x, y, speciesName)
 }
@@ -18,5 +18,5 @@ recorded) site coordinates}
 A data.frame.
 }
 \description{
-Prepare SDM Seaquest data
+Prepare Seaquest data for modelling
 }
