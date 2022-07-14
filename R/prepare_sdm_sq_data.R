@@ -20,6 +20,7 @@ prepare.sdm.sq.data <- function(x, y, speciesName) {
   z <- c("0_1km" , "1_2km",  "2_5km",  "5_10km")
   sz <- expand.grid(sid, z)
   names(sz) <- c("Survey_ID", "position_dist_code")
+  sz <- arrange(sz, .data$position_dist_code)
   sdat <-
     x[, c("Survey_ID", "site_major", "lon", "lat", "Month", "Year")]
   sdat <- distinct(sdat)
@@ -30,6 +31,7 @@ prepare.sdm.sq.data <- function(x, y, speciesName) {
   #- P/A for focal species
   x_i <- x[!is.na(x$position_dist_code),]
   x_i <- x_i[x_i$species_code == speciesName,]
+  x_i <- distinct(x_i)
   x_i <-
     x_i[, c("Survey_ID",
             "site_major",
@@ -43,14 +45,9 @@ prepare.sdm.sq.data <- function(x, y, speciesName) {
   x_z$Y[is.na(x_z$Y)] <- 0
   x_z <-
     x_z[, c("Survey_ID", "site_major", "Year", "position_dist_code", "Y")]
-  x_zs <- aggregate(
-    Y ~ site_major + Year + position_dist_code,
-    data = x_z,
-    FUN = function(x) {
-      c(nObs = sum(x), nTot = length(x))
-    }
-  )
-  x_zs <- do.call(data.frame, x_zs)
+  x_zs <- aggregate(Y ~ site_major + Year + position_dist_code,
+                    data = x_z,
+                    FUN = function(x) c(nObs = sum(x), nTot = length(x) ))
   sp_env <- left_join(x_zs, y)
   sp_env <- na.omit(sp_env)
 
