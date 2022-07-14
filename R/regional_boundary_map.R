@@ -1,4 +1,4 @@
-#' South west England boundary map
+#' South West England boundary map
 #'
 #' A sf object showing the land boundary for the south west of England.
 #'
