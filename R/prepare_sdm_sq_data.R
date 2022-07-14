@@ -48,6 +48,7 @@ prepare.sdm.sq.data <- function(x, y, speciesName) {
   x_zs <- aggregate(Y ~ site_major + Year + position_dist_code,
                     data = x_z,
                     FUN = function(x) c(nObs = sum(x), nTot = length(x) ))
+  x_zs <-do.call(data.frame, x_zs)
   sp_env <- left_join(x_zs, y)
   sp_env <- na.omit(sp_env)
 
