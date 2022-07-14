@@ -23,7 +23,7 @@ prepare.sdm.sq.data <- function(x, y, speciesName) {
   names(sz) <- c("Survey_ID", "position_dist_code")
   sz <- arrange(sz, .data$position_dist_code)
   sdat <-
-    sdat[, c("Survey_ID", "site_major", "lon", "lat", "Month", "Year")]
+    x[, c("Survey_ID", "site_major", "lon", "lat", "Month", "Year")]
   sdat <- distinct(sdat)
   sdat <- full_join(sdat, sz)
   sdat$Year <- as.numeric(sdat$Year)
