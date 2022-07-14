@@ -21,7 +21,7 @@ prepare.sdm.sq.data <- function(x, y, speciesName) {
   z <- c("0_1km" , "1_2km",  "2_5km",  "5_10km")
   sz <- expand.grid(sid, z)
   names(sz) <- c("Survey_ID", "position_dist_code")
-  sz <- arrange(sz, .data$position_dist_code)
+  #sz <- arrange(sz, .data$position_dist_code)
   sdat <-
     x[, c("Survey_ID", "site_major", "lon", "lat", "Month", "Year")]
   sdat <- distinct(sdat)
