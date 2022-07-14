@@ -10,8 +10,6 @@
 #' @import sf
 #'
 #' @return An sf object with 'id' used as a unique cell id.
-#'
-#' @export
 makeGrid <- function(region_sf, cell_size, bufferDist) {
   region_bf <-
     st_buffer(region_sf, dist = bufferDist)

@@ -4,13 +4,13 @@
 #'
 #' @docType data
 #'
-#' @usage data(sw_bd)
+#' @usage data(south_west_map)
 #'
 #' @format AN object of class \code{"sf"}
 #'
 #' @keywords datasets
 #'
 #' @examples
-#' data(sw_bd)
-#' plot(sw_bd)
-"sw_bd"
+#' data(south_west_map)
+#' plot(south_west_map)
+"south_west_map"
