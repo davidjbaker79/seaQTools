@@ -53,3 +53,5 @@ prepare.sdm.sq.data <- function(x, y, speciesName) {
   sp_env <- na.omit(sp_env)
 
 }
+
+getwd()
