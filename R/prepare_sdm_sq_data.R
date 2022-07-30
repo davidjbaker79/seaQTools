@@ -13,8 +13,6 @@
 #' @importFrom rlang .data
 #'
 #' @return A data.frame.
-#'
-#' @export
 prepare.sdm.sq.data <- function(x, y, speciesName) {
   sid <- unique(x$Survey_ID)
   z <- c("0_1km" , "1_2km",  "2_5km",  "5_10km")
