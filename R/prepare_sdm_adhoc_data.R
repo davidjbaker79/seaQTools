@@ -31,19 +31,19 @@ prepare.adhoc.sdm.data <-
            n_bkgrd) {
     #- Associated with 5km grid
     ah_z <- left_join(x, y)
-    ah_z <- ah_z[(!is.na(ah_z$lon_z) & !is.na(ah_z$lat_z)),]
+    ah_z <- ah_z[(!is.na(ah_z$lon_z) & !is.na(ah_z$lat_z)), ]
 
     #- Date ranges
     ah_z <-
       ah_z[ah_z$Survey_date >= as.Date(start_date) &
-             ah_z$Survey_date <= as.Date(end_date), ]
+             ah_z$Survey_date <= as.Date(end_date),]
 
     #- Remove dead records
-    ah_z <- ah_z[ah_z$RecordType != "Dead",]
+    ah_z <- ah_z[ah_z$RecordType != "Dead", ]
 
     #- Filter months
     if (!is.null(months)) {
-      ah_z <- ah_z[as.numeric(ah_z$Month) %in% mths,]
+      ah_z <- ah_z[as.numeric(ah_z$Month) %in% mths, ]
     }
     #- Select columns
     ah_z <-
@@ -53,11 +53,17 @@ prepare.adhoc.sdm.data <-
                "SpeciesVenacular",
                "Year",
                "position_dist_code")]
-    #ggplot(ah_f) + geom_point(aes(x= lon_z, y = lat_z))
 
     #- Filter focal species
-    ah_f <- ah_z[ah_z$SpeciesVenacular == speciesName, ]
+    ah_f <- ah_z[ah_z$SpeciesVenacular == speciesName,]
     ah_f$det <- 1
+    ah_f <-
+      ah_f[, c("id_zone",
+               "lon_z",
+               "lat_z",
+               "Year",
+               "position_dist_code",
+               "det")]
 
     #---- Create background sample
     #- Target group data
@@ -66,7 +72,7 @@ prepare.adhoc.sdm.data <-
       tgt_group <- tgt_group[!(tgt_group %in% speciesName)]
     }
     tg_dat <-
-      ah_z[ah_z$SpeciesVenacular %in% tgt_group, ]
+      ah_z[ah_z$SpeciesVenacular %in% tgt_group,]
 
     #- Calculate number of records per 1km grid cell
     tg_dat$nRec <- 1
@@ -83,7 +89,7 @@ prepare.adhoc.sdm.data <-
 
     #- Target group background by month/year i = 2011
     st_bkgd <- lapply(Yrs, function(i) {
-      sppDat_i <- sppDat[sppDat$Year == i,]
+      sppDat_i <- sppDat[sppDat$Year == i, ]
       sppDat_i$v = scales::rescale(sppDat_i$nRec, to = c(0.01, 1))
       #- Select background sample
       bkgd_i <- sppDat_i[sample(
@@ -91,7 +97,7 @@ prepare.adhoc.sdm.data <-
         size = n_bkgrd,
         replace = TRUE,
         prob = sppDat_i$v
-      ), ]
+      ),]
       bkgd_i$Year <- i
       bkgd_i$det <- 0
       bkgd_i
@@ -113,6 +119,4 @@ prepare.adhoc.sdm.data <-
     #-- need to remove NA for model
     mod_dat <- na.omit(mod_dat)
 
-
   }
-
