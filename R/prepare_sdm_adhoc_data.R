@@ -12,6 +12,7 @@
 #'
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr left_join
+#' @importFrom dplyr filter
 #' @importFrom scales rescale
 #' @importFrom gtools mixedsort
 #' @importFrom rlang .data
@@ -62,7 +63,7 @@ prepare.adhoc.sdm.data <-
     #- Target group data
     if (tgt_group_spp == "all") {
       tgt_group <- unique(ah_z$SpeciesVenacular)
-      tgt_group <- tgt_group[!(tgt_group %in% focal_species)]
+      tgt_group <- tgt_group[!(tgt_group %in% speciesName)]
     }
     tg_dat <-
       ah_z[ah_z$SpeciesVenacular %in% tgt_group, ]
@@ -82,7 +83,7 @@ prepare.adhoc.sdm.data <-
 
     #- Target group background by month/year i = 2011
     st_bkgd <- lapply(Yrs, function(i) {
-      sppDat_i <- filter(sppDat, Year == i)
+      sppDat_i <- sppDat[sppDat$Year == i,]
       sppDat_i$v = scales::rescale(sppDat_i$nRec, to = c(0.01, 1))
       #- Select background sample
       bkgd_i <- sppDat_i[sample(

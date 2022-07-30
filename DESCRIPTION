@@ -24,7 +24,10 @@ Imports:
 	magrittr,
 	concaveman,
 	Hmisc,
-	geosphere
+	geosphere,
+	gtools,
+	scales
+
 
 
 
