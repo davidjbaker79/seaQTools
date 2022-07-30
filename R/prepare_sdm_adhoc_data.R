@@ -17,6 +17,8 @@
 #' @importFrom rlang .data
 #'
 #' @return A data.frame.
+#'
+#' @export
 prepare.adhoc.sdm.data <-
   function(x,
            y,
