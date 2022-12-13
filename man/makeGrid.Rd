@@ -4,7 +4,7 @@
 \alias{makeGrid}
 \title{Make hexagonal grid for national grids}
 \usage{
-makeGrid(region_sf, cell_size, bufferDist)
+makeGrid(region_sf, cell_size, bufferDist = NULL)
 }
 \arguments{
 \item{region_sf}{An sf object defining the spatial region.}

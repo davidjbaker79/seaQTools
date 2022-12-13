@@ -11,26 +11,23 @@ Encoding: UTF-8
 LazyData: true
 LazyDataCompression: xz
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Imports:
 	sf,
+	units,
+	geosphere,
+	ggplot2,
+	ggsn,
+	ggspatial,
+	lubridate,
 	ncdf4,
 	terra,
-	plyr,
-	dplyr,
-	rlang,
 	data.table,
-	lubridate,
-	magrittr,
-	concaveman,
-	Hmisc,
-	geosphere,
-	gtools,
-	scales
-
-
-
-
-	
-
-
+	stats,
+	concaveman
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Depends: 
+    R (>= 2.10)

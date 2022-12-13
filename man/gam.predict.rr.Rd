@@ -2,31 +2,18 @@
 % Please edit documentation in R/gam_predict_reporting_rate.R
 \name{gam.predict.rr}
 \alias{gam.predict.rr}
-\title{Predict reporting rate to distance bands / time periods}
+\title{Predict reporting rate}
 \usage{
-gam.predict.rr(
-  m,
-  x,
-  region_sf,
-  position_dist_zone = c("0_1km", "1_2km", "2_5km", "5_10km"),
-  coarse_res = 5000
-)
+gam.predict.rr(m, nw)
 }
 \arguments{
-\item{m}{A model object produced by mgcv::gam.}
+\item{m}{A model object.}
 
-\item{x}{A data.frame with environmental data for predictions.}
-
-\item{region_sf}{An sf object for the region coastal boundary.}
-
-\item{position_dist_zone}{A vector of character strings giving the distance
-bands for predictions.}
-
-\item{coarse_res}{A numeric giving the coarse resolution for predictions.}
+\item{nw}{A data.frame with new data for predictions}
 }
 \value{
-A data.frame with spatial predictions.
+A data.frame.
 }
 \description{
-Predict reporting rate to distance bands / time periods
+Predict reporting rate to new data.
 }

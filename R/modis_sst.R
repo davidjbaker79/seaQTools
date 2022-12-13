@@ -16,7 +16,6 @@
 #' @import terra
 #' @import sf
 #' @import data.table
-#' @importFrom rlang .data
 #'
 #' @return A data.frame with monthly sst per grid cell.
 #'
@@ -60,15 +59,14 @@ modis_sst <- function(region_sf, modGrid, yr, mth) {
                   extent = c(-180,180,-90,90))
 
   #- Buffer and transform region
-  region_bf_4326 <- region_sf %>%
-    st_buffer(dist = 30000) %>%
-    st_transform(crs = "epsg:4326")
-  sst_grd_c <- crop(sst_grd, region_bf_4326)
+  region_bf <- st_buffer(region_sf, dist = 30000)
+  region_bf <-  st_transform(region_bf, crs = "epsg:4326")
+  sst_grd_c <- crop(sst_grd, region_bf)
   sst_grd_t <- project(sst_grd_c, "epsg:27700")
   sst_grd_t <- disagg(sst_grd_t, 10)
 
   #- Rasterize the sw_bf data to the same grid as the gebco data
-  region_bf_t <-  st_transform(region_bf_4326, crs = "epsg:27700")
+  region_bf_t <-  st_transform(region_bf, crs = "epsg:27700")
   sst_bf_mask <- rasterize(vect(region_bf_t), sst_grd_t)
 
   #- Fill missing values

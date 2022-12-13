@@ -9,10 +9,7 @@
 #'
 #' @import sf
 #' @importFrom geosphere horizon
-#' @importFrom dplyr left_join
-#' @importFrom dplyr bind_rows
 #' @import concaveman
-#' @importFrom Hmisc wtd.var
 #'
 #' @return A data.frame.
 #'
@@ -21,11 +18,9 @@ extract.field.view <- function(n,
                                sites_major_sf,
                                height = 30,
                                region_sf,
+                               region_bf,
                                modGrid) {
-  #- Region buffer
-  region_bf <- st_buffer(region_sf, dist = 30000)
-
-  #- Use height of site to calculate the horizon dist
+  #- Use height of site to calculate the horizon distance
   hz <- horizon(height)
 
   #- Subset to a single site
@@ -37,7 +32,9 @@ extract.field.view <- function(n,
   p1_b <- st_buffer(p1, hz)
 
   #- Crop coast
+  st_agr(p1_b) <- "constant"
   pc <- st_difference(p1_b, region_sf)
+  st_agr(pc) <- "constant"
   pc <-  st_cast(pc, "POLYGON")
   pc <- pc[which(st_area(pc) == max(st_area(pc))), ]
 
@@ -71,35 +68,5 @@ extract.field.view <- function(n,
 
   #- Convert linestring to polygon
   fieldview <- concaveman(lseg)
-
-  #-- Extract environmental data i = 2
-  zones <- c(1000, 2000, 5000, 10000)
-  zone_nam <- c("0_1km", "1_2km", "2_5km", "5_10km")
-  fv_grd_id_i <- lapply(1:4, function(i) {
-    if (i == 1) {
-      buff_i <- st_buffer(p1, dist = zones[i])
-    } else {
-      buff_1 <- st_buffer(p1, dist = zones[i - 1])
-      buff_2 <- st_buffer(p1, dist = zones[i])
-      buff_i <- st_difference(buff_2, buff_1)
-    }
-    zone_i <- st_intersection(buff_i, fieldview)
-    grd_z <- st_intersection(modGrid, zone_i)
-    grd_z$area_fv <-
-      as.numeric(round(st_area(grd_z) / 10 ^ 6, 2))
-    grd_z$dist_fv <-
-      as.numeric(round(st_distance(p1, grd_z, by_element = T)))
-    grd_z$position_dist_code <- zone_nam[i]
-    grd_z$viewArea <- as.numeric(st_area(zone_i) / 10 ^ 6)
-    grd_z <-
-      grd_z[, c("id",
-                "site_major",
-                "area_fv",
-                "dist_fv",
-                "position_dist_code",
-                "viewArea")]
-    grd_z <- st_drop_geometry(grd_z)
-  })
-  fv_grd_id <- do.call(bind_rows, fv_grd_id_i)
 
 }

@@ -13,7 +13,6 @@
 #' @import terra
 #' @import sf
 #' @import data.table
-#' @importFrom rlang .data
 #'
 #' @return A data.frame with monthly sst per grid cell.
 #'
@@ -29,17 +28,16 @@ vgpm2grid <- function(region_sf, modGrid, vgpm_path, mth, yr) {
   if(mth %in% 1:9) mth <- paste0("0", mth)
 
   #- Buffer and transform region
-  region_bf_4326 <- region_sf %>%
-    st_buffer(dist = 30000) %>%
-    st_transform(crs = "epsg:4326")
-  vgpm_grd_c <- crop(vgpm_dat, region_bf_4326)
+  region_bf <- st_buffer(region_sf, dist = 30000)
+  region_bf <- st_transform(region_bf, crs = "epsg:4326")
+  vgpm_grd_c <- crop(vgpm_dat, region_bf)
   vgpm_grd_t <-  project(vgpm_grd_c, "epsg:27700")
 
   #- Dissaggrate so that missing values can be interoplate later
   vgpm_grd_t <- disagg(vgpm_grd_t, 25)
 
   #- Rasterize the sw_bf data to the same grid as the gebco data
-  region_bf_t <-  st_transform(region_bf_4326, crs = "epsg:27700")
+  region_bf_t <-  st_transform(region_bf, crs = "epsg:27700")
   vgpm_bf_mask <- rasterize(vect(region_bf_t), vgpm_grd_t)
 
   #- Smooth values

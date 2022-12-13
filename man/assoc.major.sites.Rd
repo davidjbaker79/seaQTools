@@ -4,15 +4,13 @@
 \alias{assoc.major.sites}
 \title{Associating point locations sites with allocated sites}
 \usage{
-assoc.major.sites(x, y, region_sf)
+assoc.major.sites(x, y)
 }
 \arguments{
 \item{x}{A sf object containing Seaquest sites with original (as recorded)
 site coordinates.}
 
 \item{y}{An sf object containing allocated site coordinates.}
-
-\item{region_sf}{An sf object for the region coastal boundary.}
 }
 \value{
 A data.frame with sites_major associated with original sites.

@@ -1,0 +1,201 @@
+---
+title: "seaQTools_vignette"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{seaQTools_vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+
+# -- Packages
+library(seaQTools)
+library(sf)
+library(ggplot2)
+library(ggsn)
+library(ggspatial)
+library(data.table)
+library(mgcv)
+
+# -- Set path to Seaquest data
+pp <- "C:/Users/DB625/OneDrive - University of Exeter/SeaQuestAnalysis/"
+
+```
+
+# Introduction to Seaquest data and seaQTools
+
+This package contains a number of functions required to predict spatial patterns of reporting rate (proportion of survey visits in which the focal species was recorded) around the south west (Cornwall) coast. The functions achieve the following objectives:
+
+1) Clean up unclear site designations by associating site coordinates to the nearest major site (identified through visual inspection of data as most plausible locations for surveys).
+2) Identifies the viewable seascape from any point and height on the coast)
+3) Calculates mean and variability in environmental conditions across the viewable seascape from any given site and time period.
+4) Calculates these same conditions at evenly spaced points around the coast for predicting reporting rate.
+5) Automatically download Modis SST data.
+6) Automatically process VGPM and Modis SST to grid.
+7) Model reporting rate as a function of environmental conditions, space and time.
+8) Predict and plot these model results.
+
+To help speed up analysis, the package contains pre-processed objects that are likely to be used repeatedly:
+
+1) An sf object giving the land area for Cornwall (south_west_map).
+2) An sf object providing a 1km grid (espg:27700) across the region's marine environment (modGrid1kmSw).
+3) An sf object containing gridded 1km environmental data (enviro_data_sw_1km).
+4) An sf object containing the coordinates of major sites (sites_allocated).
+5) An sf object containing the coordinates of points evenly spaced around the coast for predicting (cornwall_coast_points).
+
+Below, the process of modelling reporting rate is demostrated.
+
+## Setup for analysis
+To start we must define the study region using a terrestrial land boundary map (contained in the package as south_west_map), which is then buffered and cropped within functions to provide the coastal segment on which we are focused. 
+
+```{r}
+
+b <- st_bbox(south_west_map)
+ggplot(south_west_map) +
+  geom_sf() +
+  theme_minimal(base_size = 12) %+replace% theme(legend.position = c(0.15, 0.55)) +
+    xlab("Longitude") +
+    ylab("Latitude") +
+    north(
+      location = "topleft",
+      scale = 0.25,
+      symbol = 16,
+      x.min = b[1],
+      x.max = b[3],
+      y.min = b[2],
+      y.max = b[4]
+    ) +
+    annotation_scale(
+      location = "br",
+      text_cex = 1,
+      text_col = "black",
+      text_face = "bold"
+    )
+
+```
+
+Next we need to create a model grid for analysis and must give thought to the resolution for analysing data. We probably want to extract the environmental data at high resolution (i.e. 1 km) and then aggregate to a coarse level calculating measure of variation at the coarser grain. This can be done using the function makeGrid, but for convenience is supplied.
+
+## Environmental data
+Environmental data is required across the inshore environment in a gridded format. The package includes functions to download and process Modis SST data and to process pre-downloaded spatial data (e.g. productivity and Bathymetry data). However, these functions take time to run and it is probably best to just run for additional years where new survey data is collected. Thus, the package includes pre-compiled 1km monthly environmental data.
+
+These data can filtered to the monthly needed and converted to an sf object as:
+
+```{r}
+
+env_summer <-
+  enviro_data_sw_1km[enviro_data_sw_1km$Month %in% c("05", "06", "07", "08"), ]
+env_summer <- st_as_sf(env_summer, coords = c("lon", "lat"),
+                         crs = st_crs(south_west_map))
+
+```
+
+## Prepare Seaquest data
+The Seaquest data needs be read in and converted to an sf spatial object and then spatially transformed to epsg:27700 (British National Grid). The survey location coordinates are also added and columns renames to lon and lat.
+
+```{r}
+
+sq_dat <-
+  fread(paste0(pp, "Data/ERCCIS Seaquest Timed Survey Data 2010-2021.csv"))
+sq_dat <- st_as_sf(sq_dat, coords = c("Site_longitude", "Site_latitude"),
+         crs = "epsg:4326") %>%
+  st_transform(crs = st_crs(south_west_map))
+sq_dat <- cbind(sq_dat, st_coordinates(sq_dat))
+sq_dat <- st_drop_geometry(sq_dat)
+names(sq_dat)[which(names(sq_dat) == "X")] <- "lon"
+names(sq_dat)[which(names(sq_dat) == "Y")] <- "lat"
+
+
+```
+
+The site information for Seaquest currently contains a lot of inaccurate information but is being fixed by creating common site names. In the meantime, sites have been manually aggregated where it looked like multiple designations had been given for the same site. There common sites are contained in the package for now, but will be unnecessary in the future once the database has been updated. 
+
+The site.enviro.setup function is used to set up the environmental data for each major survey site by calculating the viewable seascape from a given point and height and then cropping and summarising the environmental data within that field of view.
+
+```{r}
+
+mod_fit_site_setup <-
+  site.enviro.setup(sites_allocated,
+                    env_summer,
+                    south_west_map,
+                    modGrid1kmSw)
+```
+
+Finally, predictions of reporting rate are made to evenly spaced points around the coast and therefore these points need to be created and the conditions across the field of view needs to be calculated. First, boundary points are created and then these are run through site.enviro.setup function to extract the environmental data (as above). However, these functions can take a while to run with many points and so a dataset is included in the package with c. 700 points. 
+
+```{r}
+
+# -- Boundary points around coast
+# bdaryPnts <-
+#   create.boundary.points(south_west_map, modGrid1kmSw)
+
+# -- Extract environmental data
+# cornwall_coast_points <-
+#   site.enviro.setup(bdaryPnts,
+#                     env_summer,
+#                     south_west_map,
+#                     modGrid1kmSw)
+
+```
+
+This completes the setup for the analysis.
+
+## Modelling reporting rate for Grey Seal
+
+In this example, we use the data compiled above to model the reporting rate for Grey Seal and then predict the reporting rate around the coast of Cornwall. We use the function prepare.mod.data to associate the species-specific reporting rate data with the environmental data for a given time and major site.
+
+```{r}
+
+#-- Prepare data for species
+sp_dat <-
+  prepare.mod.data(sq_dat,
+                   mod_fit_site_setup,
+                   sites_allocated,
+                   south_west_map,
+                   "GREY_SEAL")
+
+```
+
+To model the reporting rate we use a Generalised Additive Model to estimate the proportion of visit at a major site that produced a sighting of the species in question (i.e. the reporting rate) as a function of the environmental conditions (this is written as "cbind(nObs,nTot)" in the model). Each of the s(...) terms in the model is fitting a smooth through the data points (basically, fits lots of small linear models and then joints them together). This is a really neat way of predicting in ecology because it doesn't assume relationships are linear. There is a smooth on the Year, which allows us to model the change in reporting rate and also on space (te(X, Y)) to account for spatial dependency between signings that is not accounted for by the model covariates. The log(viewArea) is adjusting the predictions depending on the viewable area at a site. The family = quasibinomial is specifying the distributional family for the reponse variable. Quasibinomial is not really a distribution, its an adjusted binomial distribution that allows for overdispersion i.e. data is more variable than expected for a binomial distribution (which is almost alway true for biological data)
+
+```{r}
+ 
+sp_mod <- gam(
+  cbind(Y.nObs,Y.nTot) ~
+    s(sst_m) +
+    s(npp_m) +
+    s(tri_m) +
+    s(depth_m) +
+    s(Year) +
+    te(X,Y) +
+    log(viewArea),
+  #weights = viewArea,
+  family = "quasibinomial",
+  method="REML", # Just a method of fitting the model
+  data = sp_dat # The data.
+)  
+summary(greySeal_mod) # Provides a summary of the model
+
+```
+
+The model is then used to predict reporting rate around the coast using the coastal point dataset created earlier.
+
+```{r}
+
+# -- Predict to coastal points
+grey_seal_rr <- gam.predict.rr(sp_mod, cornwall_coast_points)
+
+# -- These predictions can then be plotted
+grey_seal_rr_plot <- map_species_rr(sp_pred_sf, south_west_map, "Grey Seal")
+
+```
+
+The figure indicates the estimated reporting rate for Grey Seal from a given coastal location. 
